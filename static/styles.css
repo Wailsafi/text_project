@@ -1,0 +1,76 @@
+/* General Body Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Form Styling */
+form {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+}
+
+/* Entity Display */
+.entity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0f1f655b;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+.entity:hover {
+    background-color: #f1f3f5;
+    transform: scale(1.02);
+}
+
+.entity-text {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.entity-text i {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.entity-type {
+    background-color: #007bff;
+    color: white;
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 0.3rem;
+}
+
+/* Entity Type-Specific Colors */
+.entity-type.person {
+    background-color: #007bff;
+    color: white;
+}
+.entity-type.date {
+    background-color: #28a745;
+    color: white;
+}
+.entity-type.location {
+    background-color: #dc3545;
+    color: white;
+}
+.entity-type.organization {
+    background-color: #ffc107;
+    color: black;
+}
+.entity-type.default {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Footer Styling */
+footer {
+    font-size: 0.9rem;
+}

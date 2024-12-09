@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Named Entity Recognition</title>
+    <!-- Link to Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Link to Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Body Styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        /* Navbar Styling */
+        nav.navbar {
+            background-color: #007bff;
+        }.highlight {
+        font-weight: bold;
+        background-color: yellow;
+        padding: 2px;
+        border-radius: 3px;
+    }
+
+    .highlight.person {
+        background-color: #ffdd57; /* Yellow for persons */
+    }
+
+    .highlight.date {
+        background-color: #f0f8ff; /* Light Blue for dates */
+    }
+
+    .highlight.location {
+        background-color: #ffcccb; /* Light Red for locations */
+    }
+
+    .highlight.organization {
+        background-color: #c1e1ec; /* Light Blue for organizations */
+    }
+
+
+        nav.navbar .navbar-brand {
+            font-weight: bold;
+            color: white;
+        }
+
+        nav.navbar .nav-link {
+            color: white;
+            font-weight: 500;
+        }
+
+        nav.navbar .nav-link:hover {
+            color: #ffc107;
+        }
+
+        /* Container */
+        .container {
+            margin-top: 80px;
+        }
+
+        /* Form Styling */
+        .form-control {
+            border-radius: 0.5rem;
+            border: 1px solid #007bff;
+            background-color: #e7f3ff;
+            color: #007bff;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+        }
+
+        .btn-primary {
+            border-radius: 0.5rem;
+            background-color: #007bff;
+            border: none;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-primary:focus {
+            box-shadow: 0 0 0 0.25rem rgba(38, 143, 255, 0.5);
+        }
+
+        /* Entity Section Styling */
+        .entity {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .entity-text {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .entity-text i {
+            margin-right: 10px;
+            color: #007bff;
+        }
+
+        .entity-type {
+            background-color: #007bff;
+            color: white;
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            border-radius: 0.3rem;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .modal-footer .btn-secondary {
+            background-color: #f8f9fa;
+            border: 1px solid #007bff;
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Text Styling */
+        .text-muted {
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .fw-bold {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">NER Project</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Named Entity Recognition (NER)</h1>
+        <p class="text-muted">Extract entities from your text using GLiNER</p>
+    </div>
+    
+    <!-- Form for Text Input -->
+    <form action="/extract-entities" method="post" class="mb-5">
+        <div class="mb-3">
+            <label for="text" class="form-label">Enter Text:</label>
+            <textarea name="text" id="text" rows="6" class="form-control" placeholder="Enter your text here..." required>{{ text }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100">Extract Entities</button>
+    </form>
+
+    <!-- Results Section -->
+    {% if entities %}
+    <div>
+        <h2 class="fw-bold">Entities Detected:</h2>
+        <div class="mt-3">
+            <div class="highlighted-text">
+                <!-- Render the text with highlighted entities -->
+                {{ text|safe }}
+            </div>
+        </div>
+    </div>
+    <div>
+        <h2 class="fw-bold">Entities Detected:</h2>
+        <div class="mt-3">
+            {% for entity in entities %}
+            <div class="entity">
+                <span class="entity-text">
+                    <!-- Add Icons Based on Entity Type -->
+                    {% if 'person' in entity['label'] %}
+                        <i class="fas fa-user"></i>
+                    {% elif 'date' in entity['label'] %}
+                        <i class="fas fa-calendar-alt"></i>
+                    {% elif 'location' in entity['label'] %}
+                        <i class="fas fa-map-marker-alt"></i>
+                    {% elif 'organization' in entity['label'] %}
+                        <i class="fas fa-building"></i>
+                    {% else %}
+                        <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                    {{ entity['text'] }}
+                </span>
+                <span class="entity-type">{{ entity['label']}}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- About Modal Link -->
+    <p class="text-center mt-4">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">About This Project</a>
+    </p>
+
+    <!-- Modal Content -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aboutModalLabel">About This Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Named Entity Recognition (NER) Project</strong></p>
+                    <p>This project was developed as part of a collaborative effort to build an efficient NER application using the GLiNER model.</p>
+                    <p><strong>Contributors:</strong></p>
+                    <ul>
+                        <li>John Doe</li>
+                        <li>Jane Smith</li>
+                        <li>Alex Brown</li>
+                    </ul>
+                    <p>We hope you find this project helpful. Feel free to reach out for more information or collaboration opportunities!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
